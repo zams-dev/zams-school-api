@@ -1,0 +1,6 @@
+export enum USER_TYPE {
+  OPERATOR = "OPERATOR",
+  EMPLOYEE = "EMPLOYEE",
+  STUDENT = "STUDENT",
+  CLIENT = "CLIENT",
+};

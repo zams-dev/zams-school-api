@@ -1,0 +1,1 @@
+npx typeorm-model-generator -h localhost -d zamsdb -u postgres -x admin123 --ssl false -e postgres -s dbo -p 5432 -o src/db

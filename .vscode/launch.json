@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    // Based on: https://github.com/microsoft/vscode-recipes/tree/master/Angular-CLI
+    {
+      "name": "start api",
+      "request": "launch",
+      "type": "node",
+      "preLaunchTask": "npm: start:dev",
+      "webRoot": "${workspaceFolder}"
+    }
+  ]
+}

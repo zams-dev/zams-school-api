@@ -1,0 +1,3 @@
+|-- assetlinks.json
+|-- email-register-verification.html
+|-- email-reset-password-otp.html
