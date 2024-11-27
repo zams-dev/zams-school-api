@@ -35,8 +35,8 @@ import { ThrottlerModule } from "@nestjs/throttler";
 import { CustomCacheManagerModule } from "./modules/custom-cache-manager/custom-cache-manager.module";
 import { AppController } from "./app.controller";
 import { FirebaseProviderModule } from "./core/provider/firebase/firebase-provider.module";
-const config = createConfig();
-// const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
+// const config = createConfig();--for dynamic config using aws secrets
+const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
 
 @Module({
   imports: [
@@ -47,8 +47,8 @@ const config = createConfig();
       },
     ]),
     ConfigModule.forRoot({
-      ...config,
-      // envFilePath,
+      // ...config,
+      envFilePath,
       isGlobal: true,
     }),
     TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
