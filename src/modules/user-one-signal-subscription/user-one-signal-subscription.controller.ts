@@ -64,21 +64,4 @@ export class UserOneSignalSubscriptionController {
       return res;
     }
   }
-
-  @Post("mobileOneSignalScanner")
-  //   @UseGuards(JwtAuthGuard)
-  async mobileOneSignalScanner() {
-    const res: ApiResponseModel<any> = {} as any;
-    try {
-      await this.userOneSignalSubscriptionsService.mobileOneSignalScanner();
-      res.data = {};
-      res.success = true;
-      res.message = `Mobile One Signal Scan sucess!`;
-      return res;
-    } catch (e) {
-      res.success = false;
-      res.message = e.message !== undefined ? e.message : e;
-      return res;
-    }
-  }
 }

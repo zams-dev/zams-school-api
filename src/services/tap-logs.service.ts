@@ -562,14 +562,6 @@ export class TapLogsService {
     });
     const res: any[] = await entityManager.save(Notifications, notifcations);
     const notificationsIds = res.map((x) => x.notificationId);
-    // await this.pusherService.sendNotif(
-    //   users.map((x) => x.userId),
-    //   notificationsIds,
-    //   referenceId,
-    //   NOTIF_TYPE.STUDENT_LOG.toString() as any,
-    //   title,
-    //   description
-    // );
     return notificationsIds;
   }
 }

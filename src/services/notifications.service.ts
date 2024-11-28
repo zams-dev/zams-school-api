@@ -127,8 +127,4 @@ export class NotificationsService {
     );
     return unRead;
   }
-
-  // async test({ userId, title, description }) {
-  //   this.pusherService.sendNotif([userId], title, description);
-  // }
 }

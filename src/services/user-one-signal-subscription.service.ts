@@ -132,6 +132,5 @@ export class UserOneSignalSubscriptionService {
   // }
 
   async mobileOneSignalScanner() {
-    // await this.pusherService.mobileOneSignalScanner();
   }
 }

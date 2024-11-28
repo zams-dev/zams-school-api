@@ -4,6 +4,7 @@
 |-- db-first-command.txt
 |-- LICENSE
 |-- nest-cli.json
+|-- package-lock.json
 |-- package.json
 |-- private.key
 |-- public.key
@@ -380,8 +381,6 @@
         |-- one-signal-notification.service.ts
         |-- operators.service.spec.ts
         |-- operators.service.ts
-        |-- pusher.service.spec.ts
-        |-- pusher.service.ts
         |-- school-request-access.service.spec.ts
         |-- school-request-access.service.ts
         |-- school-year-levels.service.spec.ts
@@ -405,4 +404,3 @@
     |-- jest-e2e.json
 |-- tsconfig.build.json
 |-- tsconfig.json
-|-- vercel.json

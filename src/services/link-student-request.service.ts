@@ -1008,14 +1008,6 @@ export class LinkStudentRequestService {
     };
     const res: any = await entityManager.save(Notifications, notifcation);
     const notifcationIds = [res.notificationId];
-    // await this.pusherService.sendNotif(
-    //   [user.userId],
-    //   notifcationIds,
-    //   referenceId,
-    //   NOTIF_TYPE.LINK_REQUEST.toString() as any,
-    //   title,
-    //   description
-    // );
     return notifcationIds;
   }
 }
