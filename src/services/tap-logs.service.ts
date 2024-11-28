@@ -29,7 +29,6 @@ import { TapLogs } from "src/db/entities/TapLogs";
 import { UserFirebaseToken } from "src/db/entities/UserFirebaseToken";
 import { Users } from "src/db/entities/Users";
 import { Repository, EntityManager, In } from "typeorm";
-import { PusherService } from "./pusher.service";
 import { Machines } from "src/db/entities/Machines";
 import { MACHINES_ERROR_NOT_FOUND } from "src/common/constant/machines.constant";
 import { FirebaseCloudMessagingService } from "./firebase-cloud-messaging.service";
@@ -45,7 +44,6 @@ export class TapLogsService {
   constructor(
     @InjectRepository(TapLogs)
     private readonly tapLogsRepo: Repository<TapLogs>,
-    private pusherService: PusherService,
     private firebaseProvoder: FirebaseProvider,
     private firebaseCloudMessagingService: FirebaseCloudMessagingService,
     private oneSignalNotificationService: OneSignalNotificationService,
@@ -564,14 +562,14 @@ export class TapLogsService {
     });
     const res: any[] = await entityManager.save(Notifications, notifcations);
     const notificationsIds = res.map((x) => x.notificationId);
-    await this.pusherService.sendNotif(
-      users.map((x) => x.userId),
-      notificationsIds,
-      referenceId,
-      NOTIF_TYPE.STUDENT_LOG.toString() as any,
-      title,
-      description
-    );
+    // await this.pusherService.sendNotif(
+    //   users.map((x) => x.userId),
+    //   notificationsIds,
+    //   referenceId,
+    //   NOTIF_TYPE.STUDENT_LOG.toString() as any,
+    //   title,
+    //   description
+    // );
     return notificationsIds;
   }
 }

@@ -6,7 +6,6 @@ import {
 } from "src/common/utils/utils";
 import { Notifications } from "src/db/entities/Notifications";
 import { Repository } from "typeorm";
-import { PusherService } from "./pusher.service";
 import { CustomCacheManagerService } from "./custom-cache-manager.service";
 
 @Injectable()
@@ -14,7 +13,6 @@ export class NotificationsService {
   constructor(
     @InjectRepository(Notifications)
     private readonly notificationsRepo: Repository<Notifications>,
-    private pusherService: PusherService,
     private customCacheManagerService: CustomCacheManagerService
   ) {}
 

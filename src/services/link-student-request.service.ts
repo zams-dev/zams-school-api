@@ -26,7 +26,6 @@ import { Schools } from "src/db/entities/Schools";
 import { Students } from "src/db/entities/Students";
 import { Users } from "src/db/entities/Users";
 import { EntityManager, ILike, Repository } from "typeorm";
-import { PusherService } from "./pusher.service";
 import { Clients } from "src/db/entities/Clients";
 import { ClientStudent } from "src/db/entities/ClientStudent";
 import { CLIENTS_ERROR_NOT_FOUND } from "src/common/constant/clients.constant";
@@ -44,7 +43,6 @@ export class LinkStudentRequestService {
   constructor(
     @InjectRepository(LinkStudentRequest)
     private readonly linkStudentRequestRepo: Repository<LinkStudentRequest>,
-    private pusherService: PusherService,
     private firebaseProvoder: FirebaseProvider,
     private oneSignalNotificationService: OneSignalNotificationService,
     private customCacheManagerService: CustomCacheManagerService
@@ -1010,14 +1008,14 @@ export class LinkStudentRequestService {
     };
     const res: any = await entityManager.save(Notifications, notifcation);
     const notifcationIds = [res.notificationId];
-    await this.pusherService.sendNotif(
-      [user.userId],
-      notifcationIds,
-      referenceId,
-      NOTIF_TYPE.LINK_REQUEST.toString() as any,
-      title,
-      description
-    );
+    // await this.pusherService.sendNotif(
+    //   [user.userId],
+    //   notifcationIds,
+    //   referenceId,
+    //   NOTIF_TYPE.LINK_REQUEST.toString() as any,
+    //   title,
+    //   description
+    // );
     return notifcationIds;
   }
 }
