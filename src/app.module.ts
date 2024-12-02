@@ -83,6 +83,6 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
     CustomCacheManagerModule,
   ],
   providers: [AppService],
-  controllers: [],
+  controllers: [AppController],
 })
 export class AppModule {}
