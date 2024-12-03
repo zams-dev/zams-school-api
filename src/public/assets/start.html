@@ -1,0 +1,37 @@
+<!-- emailTemplate.html -->
+<table width="100%" style="background-color: #f4f4f4; padding: 20px;">
+  <tr>
+    <td>
+      <table width="600" align="center"
+        style="background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <tr>
+          <td style="background-color: #311B92; padding: 20px; text-align: center; color: #fff;">
+            <h1 style="margin: 0; font-size: 24px;">Scheduled Maintenance Notification (Start of Process)</h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 20px; text-align: center;">
+            <p style="margin: 0 0 10px; font-size: 16px;">We wanted to let you know that our scheduled maintenance is
+              about to begin. During this time, the system will be temporarily down as we work on improving its
+              performance and reliability. </p>
+            <p style="text-align: left;"><strong>Details of Maintenance:</strong></p>
+            <ul style="text-align: left;">
+              <li><strong>Start Time:</strong> {{_DOWN_TIME_START_}}</li>
+              <li><strong>Expected Downtime Duration:</strong> {{_DOWN_DURATION_}}</li>
+              <li><strong>Purpose:</strong> Routine maintenance, including auto-scaling adjustments and performance optimization.</li>
+            </ul>
+            <p style="margin: 0 0 10px; font-size: 16px;">
+              During this time, access to [specific system or application] will be unavailable. We recommend saving your work and logging out before the downtime begins.
+              Thank you for your understanding and cooperation.
+              </p>
+          </td>
+        </tr>
+        <tr>
+          <td style="background-color: #f4f4f4; padding: 10px; text-align: center; font-size: 12px; color: #999;">
+            <p style="margin: 0;">&copy; {{_YEAR_}} {{_COMPANY_}}. All rights reserved.</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

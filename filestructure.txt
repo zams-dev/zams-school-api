@@ -341,7 +341,7 @@
         |-- assets
             |-- back_online.html
             |-- downtime.html
-            |-- sent.html
+            |-- start.html
         |-- images
     |-- services
         |-- announcements.service.spec.ts
