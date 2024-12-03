@@ -28,11 +28,15 @@ async function bootstrap() {
   app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup("swagger", app, document, {
-    swaggerOptions: { defaultModelsExpandDepth: -1 }
+    swaggerOptions: { defaultModelsExpandDepth: -1 },
   });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   await app.listen(port, () => {
-    console.log("[WEB]", config.get<string>("BASE_URL") + "/swagger");
+    console.log(
+      `[WEB] ${config.get<string>("BASE_URL")}:${config.get<string>(
+        "PORT"
+      )}/swagger`
+    );
   });
 }
 bootstrap();

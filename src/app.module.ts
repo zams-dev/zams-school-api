@@ -35,6 +35,9 @@ import { ThrottlerModule } from "@nestjs/throttler";
 import { CustomCacheManagerModule } from "./modules/custom-cache-manager/custom-cache-manager.module";
 import { AppController } from "./app.controller";
 import { FirebaseProviderModule } from "./core/provider/firebase/firebase-provider.module";
+import { ServeStaticModule } from "@nestjs/serve-static";
+import { join } from "path";
+import { PublicModule } from "./modules/public/public.module";
 // const config = createConfig();--for dynamic config using aws secrets
 const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
 
@@ -50,6 +53,10 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
       // ...config,
       envFilePath,
       isGlobal: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, "public"), // Serve files from /public
+      serveRoot: "/public", // Access via /public in URL
     }),
     TypeOrmModule.forRootAsync({ useClass: TypeOrmConfigService }),
     FirebaseProviderModule,
@@ -81,6 +88,7 @@ const envFilePath: string = getEnvPath(`${__dirname}/common/envs`);
     DateTimeCheckerModule,
     JobsModule,
     CustomCacheManagerModule,
+    PublicModule
   ],
   providers: [AppService],
   controllers: [AppController],

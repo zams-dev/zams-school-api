@@ -301,6 +301,10 @@
             |-- operators.controller.spec.ts
             |-- operators.controller.ts
             |-- operators.module.ts
+        |-- public
+            |-- public.controller.spec.ts
+            |-- public.controller.ts
+            |-- public.module.ts
         |-- school-year-levels
             |-- school-year-levels.controller.spec.ts
             |-- school-year-levels.controller.ts
@@ -333,6 +337,12 @@
             |-- user-one-signal-subscription.controller.spec.ts
             |-- user-one-signal-subscription.controller.ts
             |-- user-one-signal-subscription.module.ts
+    |-- public
+        |-- assets
+            |-- back_online.html
+            |-- downtime.html
+            |-- sent.html
+        |-- images
     |-- services
         |-- announcements.service.spec.ts
         |-- announcements.service.ts

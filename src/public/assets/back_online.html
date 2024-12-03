@@ -1,0 +1,33 @@
+<!-- emailTemplate.html -->
+<table width="100%" style="background-color: #f4f4f4; padding: 20px;">
+  <tr>
+    <td>
+      <table width="600" align="center"
+        style="background-color: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+        <tr>
+          <td style="background-color: #311B92; padding: 20px; text-align: center; color: #fff;">
+            <h1 style="margin: 0; font-size: 24px;">System Back Online Notification </h1>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 20px; text-align: center;">
+            <p style="margin: 0 0 10px; font-size: 16px;">We are pleased to inform you that the scheduled maintenance
+              has been successfully completed, and the system is now back online.
+            </p>
+            <p style="text-align: left;"><strong>Details:</strong></p>
+            <ul style="text-align: left;">
+              <li><strong>Downtime Start Time:</strong> {{_DOWN_TIME_START_}}</li>
+              <li><strong>Downtime End Time:</strong> {{_DOWN_TIME_END_}}</li>
+              <li><strong>Updates Completed:</strong> Maintenance Compeleted</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td style="background-color: #f4f4f4; padding: 10px; text-align: center; font-size: 12px; color: #999;">
+            <p style="margin: 0;">&copy; {{_YEAR_}} {{_COMPANY_}}. All rights reserved.</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
