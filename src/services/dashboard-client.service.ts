@@ -33,7 +33,7 @@ export class DashboardClientService {
           LEFT JOIN dbo."SchoolYearLevels" syl ON s."SchoolYearLevelId" = syl."SchoolYearLevelId"
           LEFT JOIN dbo."StudentSection" ssec ON s."StudentId" = ssec."StudentId"
           LEFT JOIN dbo."Sections" sec ON ssec."SectionId" = sec."SectionId"
-          WHERE c."ClientCode" = '000006'
+          WHERE c."ClientCode" = '${clientCode}'
           AND cs."StudentId" IS NOT NULL
 			    AND cs."Active" = true
       ),
