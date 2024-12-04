@@ -366,7 +366,8 @@ export class AnnouncementsService {
         async (entityManager) => {
           let announcements: Announcements;
           const cacheKey = `announcements_${announcementCode}`;
-          announcements = await this.customCacheManagerService.get<Announcements>(cacheKey);
+          announcements =
+            await this.customCacheManagerService.get<Announcements>(cacheKey);
           if (!announcements) {
             announcements = await entityManager.findOne(Announcements, {
               where: {
@@ -529,10 +530,7 @@ export class AnnouncementsService {
           delete announcements.createdByUser;
           delete announcements.school;
           delete announcements.updatedByUser;
-          await entityManager.save(
-            Announcements,
-            announcements
-          );
+          await entityManager.save(Announcements, announcements);
 
           await this.customCacheManagerService.del(cacheKey);
 
@@ -605,7 +603,9 @@ export class AnnouncementsService {
       async (entityManager) => {
         let announcements: Announcements;
         const cacheKey = `announcements_${announcementCode}`;
-        announcements = await this.customCacheManagerService.get<Announcements>(cacheKey);
+        announcements = await this.customCacheManagerService.get<Announcements>(
+          cacheKey
+        );
         if (!announcements) {
           announcements = await entityManager.findOne(Announcements, {
             where: {
@@ -745,7 +745,8 @@ export class AnnouncementsService {
         try {
           let announcements: Announcements;
           const cacheKey = `announcements_${announcementCode}`;
-          announcements = await this.customCacheManagerService.get<Announcements>(cacheKey);
+          announcements =
+            await this.customCacheManagerService.get<Announcements>(cacheKey);
 
           if (!announcements) {
             announcements = await entityManager.findOne(Announcements, {
@@ -757,7 +758,7 @@ export class AnnouncementsService {
                 createdByUser: true,
                 updatedByUser: true,
                 school: true,
-              }
+              },
             });
             if (!announcements) {
               throw Error(ANNOUNCEMENTS_ERROR_NOT_FOUND);
@@ -770,10 +771,7 @@ export class AnnouncementsService {
           delete announcements.createdByUser;
           delete announcements.school;
           delete announcements.updatedByUser;
-          await entityManager.save(
-            Announcements,
-            announcements
-          );
+          await entityManager.save(Announcements, announcements);
 
           const utcDate = moment(`${announcements.targetDateTime}`)
             .tz("Asia/Manila")
@@ -786,7 +784,11 @@ export class AnnouncementsService {
             announcements.title,
             timezone
           );
-          await this.customCacheManagerService.set(cacheKey, announcements, 300);
+          await this.customCacheManagerService.set(
+            cacheKey,
+            announcements,
+            300
+          );
           return announcements;
         } catch (ex) {
           throw ex;
@@ -815,10 +817,34 @@ export class AnnouncementsService {
     schoolCode: string
   ) {
     const cacheKey = `announcements_${announcementCode}_recipients_${audienceType}_${
-      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.EMPLOYEE ? JSON.stringify(employeeTitleIds??[]) + "_" + JSON.stringify(employeeDepartmentIds??[]) + "_" + JSON.stringify(employeeExcludedIds??[]): "") ||
-      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.PRIMARY_SCHOOL ? JSON.stringify(studentPrimarySYLvlIds??[]) + "_" + JSON.stringify(studentPrimarySectionIds??[]) + "_" + JSON.stringify(studentPrimaryExcludedIds??[]): "") ||
-      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.JUNIOR_HIGH_SCHOOL ? JSON.stringify(studentJuniorSYLvlIds??[]) + "_" + JSON.stringify(studentJuniorSectionIds??[]) + "_" + JSON.stringify(studentJuniorExcludedIds??[]): "") ||
-      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.SENIOR_HIGH_SCHOOL ? JSON.stringify(studentSeniorSYLvlIds??[]) + "_" + JSON.stringify(studentSeniorSectionIds??[]) + "_" + JSON.stringify(studentSeniorExcludedIds??[]): "")
+      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.EMPLOYEE
+        ? JSON.stringify(employeeTitleIds ?? []) +
+          "_" +
+          JSON.stringify(employeeDepartmentIds ?? []) +
+          "_" +
+          JSON.stringify(employeeExcludedIds ?? [])
+        : "") ||
+      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.PRIMARY_SCHOOL
+        ? JSON.stringify(studentPrimarySYLvlIds ?? []) +
+          "_" +
+          JSON.stringify(studentPrimarySectionIds ?? []) +
+          "_" +
+          JSON.stringify(studentPrimaryExcludedIds ?? [])
+        : "") ||
+      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.JUNIOR_HIGH_SCHOOL
+        ? JSON.stringify(studentJuniorSYLvlIds ?? []) +
+          "_" +
+          JSON.stringify(studentJuniorSectionIds ?? []) +
+          "_" +
+          JSON.stringify(studentJuniorExcludedIds ?? [])
+        : "") ||
+      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.SENIOR_HIGH_SCHOOL
+        ? JSON.stringify(studentSeniorSYLvlIds ?? []) +
+          "_" +
+          JSON.stringify(studentSeniorSectionIds ?? []) +
+          "_" +
+          JSON.stringify(studentSeniorExcludedIds ?? [])
+        : "")
     }`;
     const cachedData = await this.customCacheManagerService.get<any>(cacheKey);
     if (cachedData) {
@@ -1013,11 +1039,23 @@ export class AnnouncementsService {
     schoolCode: string
   ) {
     const cacheKey = `announcements_${announcementCode}_excluded_${audienceType}_${
-      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.EMPLOYEE && employeeExcludedIds ? JSON.stringify(employeeExcludedIds??[]) : "") ||
-      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.PRIMARY_SCHOOL && studentPrimaryExcludedIds ? JSON.stringify(studentPrimaryExcludedIds??[]) : "") ||
-      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.JUNIOR_HIGH_SCHOOL && studentJuniorExcludedIds ? JSON.stringify(studentJuniorExcludedIds??[]) : "") ||
-      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.SENIOR_HIGH_SCHOOL && studentSeniorExcludedIds ? JSON.stringify(studentSeniorExcludedIds??[]) : "")
-    }`; 
+      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.EMPLOYEE &&
+      employeeExcludedIds
+        ? JSON.stringify(employeeExcludedIds ?? [])
+        : "") ||
+      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.PRIMARY_SCHOOL &&
+      studentPrimaryExcludedIds
+        ? JSON.stringify(studentPrimaryExcludedIds ?? [])
+        : "") ||
+      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.JUNIOR_HIGH_SCHOOL &&
+      studentJuniorExcludedIds
+        ? JSON.stringify(studentJuniorExcludedIds ?? [])
+        : "") ||
+      (audienceType === ANNOUNCEMENT_AUDIENCE_TYPE.SENIOR_HIGH_SCHOOL &&
+      studentSeniorExcludedIds
+        ? JSON.stringify(studentSeniorExcludedIds ?? [])
+        : "")
+    }`;
     const cachedData = await this.customCacheManagerService.get<any>(cacheKey);
     if (cachedData) {
       return cachedData;
@@ -1048,7 +1086,7 @@ export class AnnouncementsService {
         studentPrimaryExcludedIds && Array.isArray(studentPrimaryExcludedIds)
           ? studentPrimaryExcludedIds
           : [];
-          result = await this.announcementsRepo.manager
+      result = await this.announcementsRepo.manager
         .find(Students, {
           where: {
             active: true,

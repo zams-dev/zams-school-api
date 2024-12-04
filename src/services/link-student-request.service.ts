@@ -985,7 +985,7 @@ export class LinkStudentRequestService {
         if (student?.updatedByUser?.password) {
           delete student.updatedByUser.password;
         }
-        await this.customCacheManagerService.del(`${dto?.clientCode}_dashboard_client_students_*`);
+        await this.customCacheManagerService.del(`${dto?.clientCode}_dashboard_client_*`);
         return student;
       }
     );

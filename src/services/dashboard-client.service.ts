@@ -25,7 +25,7 @@ export class DashboardClientService {
     if (!results || (results && results.length === 0)) {
       const query = `
       WITH client AS ( 
-          SELECT s."SchoolYearLevelId", ssec."SectionId"
+          SELECT s."SchoolYearLevelId", ssec."SectionId", s."SchoolId"
           FROM dbo."Clients" c
           LEFT JOIN dbo."ClientStudent" cs ON c."ClientId" = cs."ClientId"
           LEFT JOIN dbo."Students" s ON cs."StudentId" = s."StudentId"
@@ -33,21 +33,25 @@ export class DashboardClientService {
           LEFT JOIN dbo."SchoolYearLevels" syl ON s."SchoolYearLevelId" = syl."SchoolYearLevelId"
           LEFT JOIN dbo."StudentSection" ssec ON s."StudentId" = ssec."StudentId"
           LEFT JOIN dbo."Sections" sec ON ssec."SectionId" = sec."SectionId"
-          WHERE c."ClientCode" = '${clientCode}'
+          WHERE c."ClientCode" = '000006'
+          AND cs."StudentId" IS NOT NULL
+			    AND cs."Active" = true
       ),
       client_org AS (
-          SELECT e."DepartmentId", e."EmployeePositionId"
+          SELECT e."DepartmentId", e."EmployeePositionId", e."SchoolId"
           FROM dbo."Clients" c
           LEFT JOIN dbo."Employees" e ON c."OrgEmployeeId" = e."OrgEmployeeId"
           WHERE c."ClientCode" = '${clientCode}'
       ),
       announcement_logs AS (
           SELECT 
-              "AnnouncementId",
-              COALESCE(SUM("VisitCount"), 0) AS total_visit_count,
-              COALESCE(MAX("LastDateVisited"), '1970-01-01') AS last_visit_date
-          FROM dbo."AnnouncementVisitLogs"
-          GROUP BY "AnnouncementId"
+              avl."AnnouncementId",
+              COALESCE(SUM(avl."VisitCount"), 0) AS total_visit_count,
+              COALESCE(MAX(avl."LastDateVisited"), '1970-01-01') AS last_visit_date
+          FROM dbo."AnnouncementVisitLogs" avl
+			    LEFT JOIN dbo."Announcements" a ON avl."AnnouncementId" = a."AnnouncementId"
+          WHERE a."SchoolId" IN (SELECT a."SchoolId" FROM client) OR a."SchoolId" IN (SELECT "SchoolId" FROM client_org)
+          GROUP BY avl."AnnouncementId"
       ),
       filtered_announcements AS (
           SELECT 
@@ -108,7 +112,10 @@ export class DashboardClientService {
                       AND (a."TargetRecipient"->>'ID')::int = ANY(ARRAY(SELECT "EmployeeId" FROM dbo."Employees"))
                   )
               )
-          )
+          ) AND 
+            (
+                  a."SchoolId" IN (SELECT "SchoolId" FROM client) OR a."SchoolId" IN (SELECT "SchoolId" FROM client_org)
+            )
       )
       SELECT 
           "AnnouncementId" AS "announcementId",
@@ -153,7 +160,7 @@ export class DashboardClientService {
   }
 
   async getClientAnnouncement({ clientCode, searchKey, pageSize, pageIndex }) {
-    const cacheKey = `${clientCode}_dashboard_client_announcements_page`;
+    const cacheKey = `${clientCode}_dashboard_client_announcements_page_${pageSize}_${pageIndex}_${searchKey}`;
     let cacheData = await this.customCacheManagerService.get<any>(cacheKey);
     if (!cacheData || (cacheData && cacheData.length === 0)) {
       if (!searchKey || searchKey === undefined || searchKey === null) {
@@ -162,7 +169,7 @@ export class DashboardClientService {
       searchKey.trim();
       const CTE_QUERY = `
         WITH client AS ( 
-            SELECT s."SchoolYearLevelId", ssec."SectionId"
+            SELECT s."SchoolYearLevelId", ssec."SectionId", s."SchoolId"
             FROM dbo."Clients" c
             LEFT JOIN dbo."ClientStudent" cs ON c."ClientId" = cs."ClientId"
             LEFT JOIN dbo."Students" s ON cs."StudentId" = s."StudentId"
@@ -171,20 +178,24 @@ export class DashboardClientService {
             LEFT JOIN dbo."StudentSection" ssec ON s."StudentId" = ssec."StudentId"
             LEFT JOIN dbo."Sections" sec ON ssec."SectionId" = sec."SectionId"
             WHERE c."ClientCode" = '${clientCode}'
+			      AND cs."StudentId" IS NOT NULL
+			      AND cs."Active" = true
         ),
         client_org AS (
-            SELECT e."DepartmentId", e."EmployeePositionId"
+            SELECT e."DepartmentId", e."EmployeePositionId", e."SchoolId"
             FROM dbo."Clients" c
             LEFT JOIN dbo."Employees" e ON c."OrgEmployeeId" = e."OrgEmployeeId"
             WHERE c."ClientCode" = '${clientCode}'
         ),
         announcement_logs AS (
             SELECT 
-                "AnnouncementId",
+                avl."AnnouncementId",
                 COALESCE(SUM("VisitCount"), 0) AS total_visit_count,
                 COALESCE(MAX("LastDateVisited"), '1970-01-01') AS last_visit_date
-            FROM dbo."AnnouncementVisitLogs"
-            GROUP BY "AnnouncementId"
+            FROM dbo."AnnouncementVisitLogs" avl
+            LEFT JOIN dbo."Announcements" a ON avl."AnnouncementId" = a."AnnouncementId"
+            WHERE a."SchoolId" IN (SELECT a."SchoolId" FROM client) OR a."SchoolId" IN (SELECT "SchoolId" FROM client_org)
+            GROUP BY avl."AnnouncementId"
         ),
         filtered_announcements AS (
             SELECT 
@@ -249,9 +260,17 @@ export class DashboardClientService {
                     al.total_visit_count <= 3
                     OR al.last_visit_date > NOW() - INTERVAL '2 days'
                     OR al.total_visit_count IS NULL
-                )
+                ) AND 
+                  (
+                        a."SchoolId" IN (SELECT "SchoolId" FROM client) OR a."SchoolId" IN (SELECT "SchoolId" FROM client_org)
+                  )
         )
     `;
+
+      pageIndex =
+        !isNaN(Number(pageIndex)) && Number(pageIndex) >= 1 ? pageIndex : 1;
+      pageSize =
+        !isNaN(Number(pageSize)) && Number(pageSize) >= 1 ? pageSize : 10;
       const [results, total] = await Promise.all([
         this.announcementsRepo
           .query(
@@ -259,10 +278,8 @@ export class DashboardClientService {
       ${CTE_QUERY}
       SELECT row_num, "AnnouncementId"
       FROM filtered_announcements
-      WHERE row_num BETWEEN ${
-        !isNaN(Number(pageIndex)) && Number(pageIndex) >= 1 ? pageIndex : 1
-      } AND ${!isNaN(Number(pageSize)) && Number(pageSize) >= 1 ? pageSize : 10}
-      ORDER BY row_num asc;
+      ORDER BY row_num ASC
+      LIMIT ${pageSize} OFFSET (${pageIndex} - 1) * ${pageSize};
       `
           )
           .then(async (res) => {
@@ -508,9 +525,13 @@ export class DashboardClientService {
     type: "ANNOUNCEMENT" | "LINK_STUDENT" | "STUDENT_LOGIN_LOGOUT"
   ) {
     if (type === "ANNOUNCEMENT") {
-      await this.customCacheManagerService.del(`${clientCode}_dashboard_client_announcements_*`);
+      await this.customCacheManagerService.del(
+        `${clientCode}_dashboard_client_announcements_*`
+      );
     } else if (type === "STUDENT_LOGIN_LOGOUT") {
-      await this.customCacheManagerService.del(`${clientCode}_dashboard_client_students_*`);
+      await this.customCacheManagerService.del(
+        `${clientCode}_dashboard_client_students_*`
+      );
     } else if (type === "LINK_STUDENT") {
     }
     const user = await this.clientRepo.manager.findOne(Users, {
